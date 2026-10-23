@@ -1,28 +1,28 @@
-import { createClient } from 'https://esm.sh'
+import { createClient } from 'https://esm.sh';
 
-// 1. Initialize your Supabase client connection
-const supabase = createClient('https://supabase.co', 'sb_publishable_6_uBDWWPpuLHRvnJw-Gxxw_UulNEOB2')
+// Replace these placeholders with your actual copied strings from your Supabase settings!
+const supabaseUrl = 'https://supabase.co'; 
+const supabaseAnonKey = 'sb_publishable_6_uBDWWPpuLHRvnJw-Gxxw_UulNEOB2';
 
-async function uploadProfilePicture(fileInputEvent) {
-  const file = fileInputEvent.target.files[0]
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+export async function uploadProfilePicture(fileInputEvent) {
+  const file = fileInputEvent.target.files[0];
   if (!file) return;
 
-  // Generate a clean, unique file name for the user profile
-  const fileExtension = file.name.split('.').pop()
-  const fileName = `user-${Date.now()}.${fileExtension}`
+  const fileExtension = file.name.split('.').pop();
+  const fileName = `user-${Date.now()}.${fileExtension}`;
 
-  // 2. Upload the file to your 'avatars' storage bucket
   const { data, error } = await supabase.storage
     .from('avatars')
     .upload(fileName, file, {
       cacheControl: '3600',
       upsert: false
-    })
+    });
 
   if (error) {
-    console.error('Upload failed:', error.message)
+    console.error('Upload failed:', error.message);
   } else {
-    console.log('Upload successful! File saved at:', data.path)
-    // This insert event will automatically trigger your background processor!
+    console.log('Upload successful! File saved at:', data.path);
   }
 }
