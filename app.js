@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-client'
 
 // 1. Initialize your Supabase client connection
-const supabase = createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY')
+const supabase = createClient('https://supabase.co', 'sb_publishable_6_uBDWWPpuLHRvnJw-Gxxw_UulNEOB2')
 
 async function uploadProfilePicture(fileInputEvent) {
   const file = fileInputEvent.target.files[0]
