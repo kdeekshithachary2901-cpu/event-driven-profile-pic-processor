@@ -1,7 +1,7 @@
 import { createClient } from 'https://jsdelivr.net';
 
 // Replace these placeholders with your actual copied strings from your Supabase settings!
-const supabaseUrl = 'https://supabase.co'; 
+const supabaseUrl = 'https://yrfjgzakunovdgcrhkzl.supabase.co'; 
 const supabaseAnonKey = 'sb_publishable_6_uBDWWPpuLHRvnJw-Gxxw_UulNEOB2';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
