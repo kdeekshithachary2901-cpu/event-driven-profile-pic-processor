@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Picture Upload</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f4f9; }
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f4f9; margin: 0; }
         .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
         input { margin-top: 15px; }
     </style>
@@ -14,43 +14,46 @@
 
     <div class="card">
         <h2>Upload Profile Picture</h2>
-        <!-- This is the file selector button -->
         <input type="file" id="profilePicInput" accept="image/*" />
     </div>
 
-    <!-- This links your HTML page directly to your upload code -->
-<script src="https://cloudflare.com" integrity="sha512-4Q4c8kZgVp14BfLwA5A2l6N7tH5d+2s2h4x6d=" crossorigin="anonymous"></script>
+    <!-- 1. Load Supabase via global script bundle -->
+    <script src="https://cloudflare.com"></script>
 
-<script>
-  // 1. Double check that these quotes have your actual project credentials inside them!
-  const supabaseUrl = 'https://yrfjgzakunovdgcrhkzl.supabase.co'; 
-  const supabaseAnonKey = 'sb_publishable_6_uBDWWPpuLHRvnJw-Gxxw_UulNEOB2';
-  
-  // 2. Initialize using the global window object explicitly
-  const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+    <script>
+        // 2. Add your exact Supabase credentials inside these single quotes
+        const supabaseUrl = 'https://yrfjgzakunovdgcrhkzl.supabase.co'; 
+        const supabaseAnonKey = 'sb_publishable_6_uBDWWPpuLHRvnJw-Gxxw_UulNEOB2';
+        
+        // 3. Initialize the Supabase client safely
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-  document.getElementById('profilePicInput').addEventListener('change', async (event) => {
-    // 3. Fix the array index here to extract the actual photo file binary correctly
-    const file = event.target.files[0];
-    if (!file) return;
+        // 4. Listen for image changes
+        document.getElementById('profilePicInput').addEventListener('change', async (event) => {
+            const file = event.target.files[0]; // Fixes the [0] requirement
+            if (!file) return;
 
-    console.log("File detected! Initiating storage transmission...");
+            console.log("File detected! Initiating storage transmission for:", file.name);
 
-    const fileExtension = file.name.split('.').pop();
-    const fileName = `user-${Date.now()}.${fileExtension}`;
+            // Generate a clean, unique file name
+            const fileExtension = file.name.split('.').pop();
+            const fileName = `user-${Date.now()}.${fileExtension}`;
 
-    // 4. Send the file up to your storage bucket
-    const { data, error } = await supabaseClient.storage
-      .from('avatars')
-      .upload(fileName, file, {
-        cacheControl: '3600',
-        upsert: false
-      });
+            // 5. Send file directly up to your public 'avatars' bucket
+            const { data, error } = await supabaseClient.storage
+                .from('avatars')
+                .upload(fileName, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
 
-    if (error) {
-      console.error('Upload failed details:', error.message);
-    } else {
-      console.log('Upload successful! File saved at:', data.path);
-    }
-  });
-</script>
+            if (error) {
+                console.error('Upload failed details:', error.message);
+            } else {
+                console.log('Upload successful! File saved at:', data.path);
+            }
+        });
+    </script>
+
+</body>
+</html>
