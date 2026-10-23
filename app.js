@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-client'
+import { createClient } from 'https://esm.sh'
 
 // 1. Initialize your Supabase client connection
 const supabase = createClient('https://supabase.co', 'sb_publishable_6_uBDWWPpuLHRvnJw-Gxxw_UulNEOB2')
