@@ -19,14 +19,43 @@
     </div>
 
     <!-- This links your HTML page directly to your upload code -->
-  <!-- This script imports app.js so it runs and sets up your global window connection -->
-<script type="module" src="./app.js?v=5"></script>
+<!-- 1. Load the Supabase library cleanly using a standard global script tag -->
+<script src="https://jsdelivr.net"></script>
 
 <script>
-    // This standard script waits for the file selector to change, then calls the function safely
-    document.getElementById('profilePicInput').addEventListener('change', (event) => {
-        if (window.uploadProfilePicture) {
-            window.uploadProfilePicture(event);
+  // 2. Initialize your Supabase client directly inside the HTML page
+  // Replace these placeholders with your actual copied strings from your Supabase settings!
+  const supabaseUrl = 'https://yrfjgzakunovdgcrhkzl.supabase.co'; 
+  const supabaseAnonKey = 'sb_publishable_6_uBDWWPpuLHRvnJw-Gxxw_UulNEOB2';
+  
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+  // 3. Set up the file change listener
+  document.getElementById('profilePicInput').addEventListener('change', async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    console.log("Starting upload processing for file:", file.name);
+
+    // Generate a clean, unique file name for the user profile
+    const fileExtension = file.name.split('.').pop();
+    const fileName = `user-${Date.now()}.${fileExtension}`;
+
+    // 4. Send the file straight up to your 'avatars' storage bucket
+    const { data, error } = await supabaseClient.storage
+      .from('avatars')
+      .upload(fileName, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (error) {
+      console.error('Upload failed:', error.message);
+    } else {
+      console.log('Upload successful! File saved at:', data.path);
+    }
+  });
+</script>
         } else {
             console.error("Upload function not loaded yet!");
         }
