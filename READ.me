@@ -1,0 +1,50 @@
+
+🏗️ Developer Summary Architecture
+
+```text
+[Frontend: GitHub Pages] -> (Direct REST POST) -> [Supabase Storage: avatars bucket]
+                                                               │
+                                                       (Database Trigger)
+                                                               │
+                                                               ▼
+                                                  [Webhook: Val Town Worker]
+```
+
+1. **Ingestion (`index.html`):** Client-side script triggers a direct native `fetch()` POST request, streaming the image binary directly into the public Supabase bucket `avatars`.
+2. **Routing Bridge (PostgreSQL Trigger):** A native DB trigger listens for `INSERT` events on the `storage.objects` metadata table. 
+3. **Execution (`processor.js`):** The trigger fires an asynchronous webhook HTTP POST request payload directly to an edge worker running on **Val Town**, executing background optimization logic autonomously.
+
+---
+
+## 📁 Repository Blueprint
+
+* `index.html` — Clean Frontend UI featuring a zero-dependency HTML form connection pipeline.
+* `app.js` — Client side upload tracker containing project API credentials.
+* `processor.js` — Serverless backend code hosted as an HTTP Val on Val Town.
+
+---
+
+## 🛠️ Minimal Setup Script
+
+### 1. Database Storage RLS Rule
+To unblock public ingestion, apply this global validation logic under your `avatars` bucket configuration:
+```sql
+bucket_id = 'avatars'
+```
+
+### 2. Manual Webhook Trigger
+Since platform UI layers can timeout, execute this query directly inside the Supabase **SQL Editor** to establish the automated pipeline routing link:
+
+```sql
+CREATE OR REPLACE FUNCTION public.send_avatar_event_to_valtown()
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS \[ BEGIN PERFORM net.http_post( url := 'https://val.run', -- Paste your Val Town live link here headers := '{"Content-Type": "application/json"}'::jsonb, body := json_build_object('bucket_id', NEW.bucket_id, 'name', NEW.name)::text ); RETURN NEW; END; \];
+
+CREATE TRIGGER "on_avatar_uploaded_trigger"
+AFTER INSERT ON storage.objects FOR EACH ROW
+EXECUTE FUNCTION public.send_avatar_event_to_valtown();
+```
+
+---
+
+## 🏁 Conclusion
+This architecture proves that you can deploy an automated, fully functional background image pipeline layout with **zero dependencies** and **zero infrastructure cost**. The frontend is cleanly decoupled, storage scales automatically, and compute triggers purely on-demand.
