@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Picture Upload</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f4f9; }
+        .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+        input { margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Upload Profile Picture</h2>
+        <!-- This is the file selector button -->
+        <input type="file" id="profilePicInput" accept="image/*" />
+    </div>
+
+    <!-- This links your HTML page directly to your upload code -->
+    <script type="module">
+        import { uploadProfilePicture } from './app.js';
+        document.getElementById('profilePicInput').addEventListener('change', uploadProfilePicture);
+    </script>
+
+</body>
+</html>
