@@ -19,10 +19,10 @@
     </div>
 
     <!-- This links your HTML page directly to your upload code -->
-    <script type="module">
-     import { uploadProfilePicture } from 'app.js';
-        document.getElementById('profilePicInput').addEventListener('change', uploadProfilePicture);
-    </script>
+   <script type="module">
+    import { uploadProfilePicture } from './app.js?v=3';
+    document.getElementById('profilePicInput').addEventListener('change', uploadProfilePicture);
+</script>
 
 </body>
 </html>
