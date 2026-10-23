@@ -1,4 +1,4 @@
-import { createClient } from 'https://unpkg.com';
+import { createClient } from 'https://jsdelivr.net';
 
 // Replace these placeholders with your actual copied strings from your Supabase settings!
 const supabaseUrl = 'https://supabase.co'; 
