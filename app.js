@@ -1,4 +1,4 @@
-import { createClient } from 'https://esm.sh';
+import { createClient } from 'https://unpkg.com';
 
 // Replace these placeholders with your actual copied strings from your Supabase settings!
 const supabaseUrl = 'https://supabase.co'; 
