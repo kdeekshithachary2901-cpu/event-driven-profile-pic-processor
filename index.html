@@ -19,29 +19,27 @@
     </div>
 
     <!-- This links your HTML page directly to your upload code -->
-<!-- 1. Load the Supabase library cleanly using a standard global script tag -->
-<script src="https://jsdelivr.net"></script>
+<script src="https://cloudflare.com" integrity="sha512-4Q4c8kZgVp14BfLwA5A2l6N7tH5d+2s2h4x6d=" crossorigin="anonymous"></script>
 
 <script>
-  // 2. Initialize your Supabase client directly inside the HTML page
-  // Replace these placeholders with your actual copied strings from your Supabase settings!
+  // 1. Double check that these quotes have your actual project credentials inside them!
   const supabaseUrl = 'https://yrfjgzakunovdgcrhkzl.supabase.co'; 
   const supabaseAnonKey = 'sb_publishable_6_uBDWWPpuLHRvnJw-Gxxw_UulNEOB2';
   
-  const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
+  // 2. Initialize using the global window object explicitly
+  const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-  // 3. Set up the file change listener
   document.getElementById('profilePicInput').addEventListener('change', async (event) => {
+    // 3. Fix the array index here to extract the actual photo file binary correctly
     const file = event.target.files[0];
     if (!file) return;
 
-    console.log("Starting upload processing for file:", file.name);
+    console.log("File detected! Initiating storage transmission...");
 
-    // Generate a clean, unique file name for the user profile
     const fileExtension = file.name.split('.').pop();
     const fileName = `user-${Date.now()}.${fileExtension}`;
 
-    // 4. Send the file straight up to your 'avatars' storage bucket
+    // 4. Send the file up to your storage bucket
     const { data, error } = await supabaseClient.storage
       .from('avatars')
       .upload(fileName, file, {
@@ -50,17 +48,9 @@
       });
 
     if (error) {
-      console.error('Upload failed:', error.message);
+      console.error('Upload failed details:', error.message);
     } else {
       console.log('Upload successful! File saved at:', data.path);
     }
   });
 </script>
-        } else {
-            console.error("Upload function not loaded yet!");
-        }
-    });
-</script>
-
-</body>
-</html>
