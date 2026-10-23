@@ -26,3 +26,4 @@ export async function uploadProfilePicture(fileInputEvent) {
     console.log('Upload successful! File saved at:', data.path);
   }
 }
+window.uploadProfilePicture = uploadProfilePicture;
